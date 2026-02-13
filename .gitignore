@@ -1,0 +1,46 @@
+# FRA Diagnostic App - Root .gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+*.egg
+.venv/
+venv/
+env/
+
+# Database
+*.db
+*.sqlite3
+
+# Uploads
+uploads/
+
+# Environment
+.env
+.env.local
+
+# IDE
+.vscode/settings.json
+.idea/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Node
+node_modules/
+frontend/dist/
+frontend/build/
+
+# ML Models (large files)
+ml/saved_models/*.pkl
+ml/saved_models/*.pt
+ml/saved_models/*.pth
+ml/saved_models/*.joblib
+
+# Logs
+*.log

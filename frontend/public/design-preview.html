@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FRA Diagnostics - Soft & Elegant Light Theme Preview</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <style>
+    /* ============================================
+       SOFT & ELEGANT LIGHT THEME
+       Inspired by Apple & Stripe design systems
+       Accent: Teal/Cyan (#0D9488)
+       ============================================ */
+    
+    :root {
+      /* Background Colors */
+      --bg-primary: #FAFBFC;
+      --bg-secondary: #F4F6F8;
+      --bg-tertiary: #FFFFFF;
+      --bg-elevated: #FFFFFF;
+      
+      /* Text Colors */
+      --text-primary: #1A1D21;
+      --text-secondary: #4A5568;
+      --text-muted: #718096;
+      --text-dim: #A0AEC0;
+      
+      /* Accent Colors - Teal/Cyan */
+      --teal-50: #F0FDFA;
+      --teal-100: #CCFBF1;
+      --teal-200: #99F6E4;
+      --teal-300: #5EEAD4;
+      --teal-400: #2DD4BF;
+      --teal-500: #14B8A6;
+      --teal-600: #0D9488;
+      --teal-700: #0F766E;
+      --teal-800: #115E59;
+      --teal-900: #134E4A;
+      
+      /* Status Colors */
+      --status-success: #059669;
+      --status-success-bg: #ECFDF5;
+      --status-success-border: #A7F3D0;
+      
+      --status-warning: #D97706;
+      --status-warning-bg: #FFFBEB;
+      --status-warning-border: #FDE68A;
+      
+      --status-critical: #DC2626;
+      --status-critical-bg: #FEF2F2;
+      --status-critical-border: #FECACA;
+      
+      --status-info: #0284C7;
+      --status-info-bg: #F0F9FF;
+      --status-info-border: #BAE6FD;
+      
+      /* Borders & Shadows */
+      --border-light: #E2E8F0;
+      --border-medium: #CBD5E1;
+      --border-focus: var(--teal-500);
+      
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 10px 10px -5px rgba(0, 0, 0, 0.03);
+      --shadow-glow: 0 0 20px rgba(13, 148, 136, 0.15);
+      
+      /* Typography */
+      --font-display: 'DM Sans', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      
+      /* Spacing */
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 20px;
+      --radius-full: 9999px;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: var(--font-body);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    
+    /* Layout */
+    .app-container {
+      display: flex;
+      min-height: 100vh;
+    }
+    
+    /* ============================================
+       SIDEBAR
+       ============================================ */
+    .sidebar {
+      width: 280px;
+      background: var(--bg-tertiary);
+      border-right: 1px solid var(--border-light);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      height: 100vh;
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .sidebar-header {
+      padding: 24px;
+      border-bottom: 1px solid var(--border-light);
+    }
+    
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .logo-icon {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, var(--teal-500) 0%, var(--teal-600) 100%);
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 18px;
+      box-shadow: var(--shadow-glow);
+    }
+    
+    .logo-text h1 {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    
+    .logo-text h1 span {
+      background: linear-gradient(135deg, var(--teal-600) 0%, var(--teal-500) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .logo-text p {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    
+    .sidebar-nav {
+      flex: 1;
+      padding: 16px 12px;
+      overflow-y: auto;
+    }
+    
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 4px;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+    }
+    
+    .nav-item:hover {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+    
+    .nav-item.active {
+      background: var(--teal-50);
+      color: var(--teal-700);
+      border-color: var(--teal-200);
+    }
+    
+    .nav-item.active .nav-icon {
+      color: var(--teal-600);
+    }
+    
+    .nav-icon {
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .nav-indicator {
+      width: 6px;
+      height: 6px;
+      background: var(--teal-500);
+      border-radius: 50%;
+      margin-left: auto;
+    }
+    
+    .sidebar-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border-light);
+    }
+    
+    .sidebar-footer-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-muted);
+      font-size: 13px;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    
+    .sidebar-footer-link:hover {
+      color: var(--text-primary);
+    }
+    
+    .version-info {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 12px;
+    }
+    
+    .version-badge {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+    
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--status-success);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    
+    /* ============================================
+       MAIN CONTENT
+       ============================================ */
+    .main-content {
+      flex: 1;
+      margin-left: 280px;
+      padding: 32px 40px;
+      background: var(--bg-primary);
+    }
+    
+    /* Page Header */
+    .page-header {
+      margin-bottom: 32px;
+    }
+    
+    .page-title {
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+    
+    .page-subtitle {
+      font-size: 15px;
+      color: var(--text-muted);
+    }
+    
+    /* ============================================
+       CARDS
+       ============================================ */
+    .card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s ease;
+    }
+    
+    .card:hover {
+      box-shadow: var(--shadow-md);
+      border-color: var(--border-medium);
+    }
+    
+    .card-elevated {
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .card-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .card-title {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .card-title-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--teal-50);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--teal-600);
+    }
+    
+    .card-body {
+      padding: 24px;
+    }
+    
+    .card-body-compact {
+      padding: 16px 24px;
+    }
+    
+    /* ============================================
+       SUMMARY CARDS (Stats)
+       ============================================ */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+    
+    .stat-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s ease;
+    }
+    
+    .stat-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+    
+    .stat-content {
+      flex: 1;
+    }
+    
+    .stat-label {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    
+    .stat-value {
+      font-family: var(--font-display);
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1;
+    }
+    
+    .stat-trend {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 10px;
+    }
+    
+    .stat-trend.positive {
+      color: var(--status-success);
+    }
+    
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+    
+    .stat-icon.teal {
+      background: var(--teal-50);
+      color: var(--teal-600);
+    }
+    
+    .stat-icon.blue {
+      background: var(--status-info-bg);
+      color: var(--status-info);
+    }
+    
+    .stat-icon.red {
+      background: var(--status-critical-bg);
+      color: var(--status-critical);
+    }
+    
+    .stat-icon.purple {
+      background: #F5F3FF;
+      color: #7C3AED;
+    }
+    
+    /* ============================================
+       BUTTONS
+       ============================================ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 18px;
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 500;
+      border-radius: var(--radius-md);
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, var(--teal-500) 0%, var(--teal-600) 100%);
+      color: white;
+      box-shadow: 0 2px 4px rgba(13, 148, 136, 0.2);
+    }
+    
+    .btn-primary:hover {
+      background: linear-gradient(135deg, var(--teal-600) 0%, var(--teal-700) 100%);
+      box-shadow: 0 4px 8px rgba(13, 148, 136, 0.3);
+      transform: translateY(-1px);
+    }
+    
+    .btn-secondary {
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-light);
+    }
+    
+    .btn-secondary:hover {
+      background: var(--border-light);
+      color: var(--text-primary);
+    }
+    
+    .btn-ghost {
+      background: transparent;
+      color: var(--teal-600);
+      padding: 8px 12px;
+    }
+    
+    .btn-ghost:hover {
+      background: var(--teal-50);
+    }
+    
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 13px;
+    }
+    
+    /* ============================================
+       BADGES
+       ============================================ */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 500;
+      border-radius: var(--radius-full);
+      border: 1px solid transparent;
+    }
+    
+    .badge-success {
+      background: var(--status-success-bg);
+      color: var(--status-success);
+      border-color: var(--status-success-border);
+    }
+    
+    .badge-warning {
+      background: var(--status-warning-bg);
+      color: var(--status-warning);
+      border-color: var(--status-warning-border);
+    }
+    
+    .badge-critical {
+      background: var(--status-critical-bg);
+      color: var(--status-critical);
+      border-color: var(--status-critical-border);
+    }
+    
+    .badge-info {
+      background: var(--status-info-bg);
+      color: var(--status-info);
+      border-color: var(--status-info-border);
+    }
+    
+    .badge-neutral {
+      background: var(--bg-secondary);
+      color: var(--text-muted);
+      border-color: var(--border-light);
+    }
+    
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+    
+    /* ============================================
+       TABLE
+       ============================================ */
+    .table-container {
+      overflow-x: auto;
+    }
+    
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    .table th {
+      text-align: left;
+      padding: 12px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-light);
+    }
+    
+    .table td {
+      padding: 16px;
+      font-size: 14px;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border-light);
+    }
+    
+    .table tr:hover td {
+      background: var(--bg-secondary);
+    }
+    
+    .table tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .table-link {
+      color: var(--teal-600);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    
+    .table-link:hover {
+      color: var(--teal-700);
+      text-decoration: underline;
+    }
+    
+    .table-mono {
+      font-family: var(--font-mono);
+      font-size: 13px;
+    }
+    
+    /* ============================================
+       FORM INPUTS
+       ============================================ */
+    .input {
+      width: 100%;
+      padding: 10px 14px;
+      font-family: var(--font-body);
+      font-size: 14px;
+      color: var(--text-primary);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      transition: all 0.2s ease;
+    }
+    
+    .input:focus {
+      outline: none;
+      border-color: var(--teal-500);
+      box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1);
+    }
+    
+    .input::placeholder {
+      color: var(--text-dim);
+    }
+    
+    .input-with-icon {
+      padding-left: 42px;
+    }
+    
+    .input-group {
+      position: relative;
+    }
+    
+    .input-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-dim);
+    }
+    
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+    
+    /* ============================================
+       HEALTH RING
+       ============================================ */
+    .health-ring-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px;
+    }
+    
+    .health-ring {
+      position: relative;
+      width: 140px;
+      height: 140px;
+    }
+    
+    .health-ring svg {
+      transform: rotate(-90deg);
+    }
+    
+    .health-ring-bg {
+      fill: none;
+      stroke: var(--border-light);
+      stroke-width: 10;
+    }
+    
+    .health-ring-progress {
+      fill: none;
+      stroke: url(#healthGradient);
+      stroke-width: 10;
+      stroke-linecap: round;
+      stroke-dasharray: 377;
+      stroke-dashoffset: 38;
+      transition: stroke-dashoffset 1s ease;
+    }
+    
+    .health-ring-value {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .health-ring-percent {
+      font-family: var(--font-display);
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    
+    .health-ring-label {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    
+    /* ============================================
+       QUICK ACTIONS
+       ============================================ */
+    .quick-action {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      text-decoration: none;
+      transition: all 0.2s ease;
+      margin-bottom: 10px;
+    }
+    
+    .quick-action:hover {
+      background: var(--teal-50);
+      border-color: var(--teal-200);
+    }
+    
+    .quick-action-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--teal-600);
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .quick-action-text {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+    
+    .quick-action:hover .quick-action-text {
+      color: var(--teal-700);
+    }
+    
+    /* ============================================
+       ALERTS
+       ============================================ */
+    .alert {
+      display: flex;
+      gap: 14px;
+      padding: 16px 20px;
+      border-radius: var(--radius-lg);
+      border: 1px solid;
+    }
+    
+    .alert-info {
+      background: var(--status-info-bg);
+      border-color: var(--status-info-border);
+      color: var(--status-info);
+    }
+    
+    .alert-warning {
+      background: var(--status-warning-bg);
+      border-color: var(--status-warning-border);
+      color: var(--status-warning);
+    }
+    
+    .alert-icon {
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    
+    .alert-title {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    
+    .alert-description {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    
+    /* ============================================
+       GRID LAYOUTS
+       ============================================ */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+    }
+    
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    
+    /* ============================================
+       ANIMATIONS
+       ============================================ */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    @keyframes slideUp {
+      from { 
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to { 
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .animate-fade-in {
+      animation: fadeIn 0.3s ease;
+    }
+    
+    .animate-slide-up {
+      animation: slideUp 0.4s ease;
+    }
+    
+    /* ============================================
+       RESPONSIVE
+       ============================================ */
+    @media (max-width: 1200px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .sidebar {
+        display: none;
+      }
+      
+      .main-content {
+        margin-left: 0;
+        padding: 20px;
+      }
+      
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-container">
+          <div class="logo-icon">⚡</div>
+          <div class="logo-text">
+            <h1><span>FRA</span> Diagnostics</h1>
+            <p>Transformer Health Analysis</p>
+          </div>
+        </div>
+      </div>
+      
+      <nav class="sidebar-nav">
+        <a href="#" class="nav-item active">
+          <span class="nav-icon">📊</span>
+          Dashboard
+          <span class="nav-indicator"></span>
+        </a>
+        <a href="#" class="nav-item">
+          <span class="nav-icon">⚡</span>
+          Transformers
+        </a>
+        <a href="#" class="nav-item">
+          <span class="nav-icon">📤</span>
+          Import Data
+        </a>
+        <a href="#" class="nav-item">
+          <span class="nav-icon">📈</span>
+          Analysis
+        </a>
+        <a href="#" class="nav-item">
+          <span class="nav-icon">📋</span>
+          Recommendations
+        </a>
+      </nav>
+      
+      <div class="sidebar-footer">
+        <a href="#" class="sidebar-footer-link">
+          <span>⚙️</span>
+          Settings
+        </a>
+        <div class="version-info">
+          <span class="version-badge">v1.0.0</span>
+          <div class="status-indicator">
+            <span class="status-dot"></span>
+            System Online
+          </div>
+        </div>
+      </div>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Page Header -->
+      <div class="page-header animate-fade-in">
+        <h1 class="page-title">Dashboard</h1>
+        <p class="page-subtitle">Fleet overview and system health monitoring</p>
+      </div>
+      
+      <!-- Stats Grid -->
+      <div class="stats-grid animate-slide-up">
+        <div class="stat-card">
+          <div class="stat-content">
+            <p class="stat-label">Total Transformers</p>
+            <p class="stat-value">24</p>
+            <p class="stat-trend positive">
+              <span>↑</span> +2 this month
+            </p>
+          </div>
+          <div class="stat-icon teal">⚡</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-content">
+            <p class="stat-label">Total Measurements</p>
+            <p class="stat-value">1,847</p>
+            <p class="stat-trend">Active monitoring</p>
+          </div>
+          <div class="stat-icon blue">📊</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-content">
+            <p class="stat-label">Critical Assets</p>
+            <p class="stat-value">3</p>
+            <p class="stat-trend">5 important</p>
+          </div>
+          <div class="stat-icon red">⚠️</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-content">
+            <p class="stat-label">Analyses Run</p>
+            <p class="stat-value">156</p>
+            <p class="stat-trend positive">
+              <span>↑</span> +12 this week
+            </p>
+          </div>
+          <div class="stat-icon purple">🔬</div>
+        </div>
+      </div>
+      
+      <!-- Main Grid -->
+      <div class="grid-2">
+        <!-- Transformer Fleet Table -->
+        <div class="card animate-slide-up">
+          <div class="card-header">
+            <div class="card-title">
+              <div class="card-title-icon">⚡</div>
+              Transformer Fleet
+            </div>
+            <button class="btn btn-ghost btn-sm">
+              View All →
+            </button>
+          </div>
+          <div class="table-container">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Substation</th>
+                  <th>Voltage</th>
+                  <th>Criticality</th>
+                  <th>Measurements</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><a href="#" class="table-link">TR-001-MAIN</a></td>
+                  <td>Central Station</td>
+                  <td class="table-mono">132 kV</td>
+                  <td><span class="badge badge-critical"><span class="badge-dot"></span>Critical</span></td>
+                  <td class="table-mono">47</td>
+                </tr>
+                <tr>
+                  <td><a href="#" class="table-link">TR-002-AUX</a></td>
+                  <td>North Grid</td>
+                  <td class="table-mono">66 kV</td>
+                  <td><span class="badge badge-warning"><span class="badge-dot"></span>Important</span></td>
+                  <td class="table-mono">32</td>
+                </tr>
+                <tr>
+                  <td><a href="#" class="table-link">TR-003-DIST</a></td>
+                  <td>South Hub</td>
+                  <td class="table-mono">33 kV</td>
+                  <td><span class="badge badge-success"><span class="badge-dot"></span>Standard</span></td>
+                  <td class="table-mono">28</td>
+                </tr>
+                <tr>
+                  <td><a href="#" class="table-link">TR-004-FEED</a></td>
+                  <td>East Terminal</td>
+                  <td class="table-mono">11 kV</td>
+                  <td><span class="badge badge-success"><span class="badge-dot"></span>Standard</span></td>
+                  <td class="table-mono">19</td>
+                </tr>
+                <tr>
+                  <td><a href="#" class="table-link">TR-005-STEP</a></td>
+                  <td>West Plant</td>
+                  <td class="table-mono">220 kV</td>
+                  <td><span class="badge badge-critical"><span class="badge-dot"></span>Critical</span></td>
+                  <td class="table-mono">54</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        <!-- Right Column -->
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+          <!-- System Health -->
+          <div class="card animate-slide-up">
+            <div class="card-header">
+              <div class="card-title">System Health</div>
+              <span class="status-dot" style="width: 8px; height: 8px;"></span>
+            </div>
+            <div class="health-ring-container">
+              <div class="health-ring">
+                <svg width="140" height="140" viewBox="0 0 140 140">
+                  <defs>
+                    <linearGradient id="healthGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stop-color="#14B8A6" />
+                      <stop offset="100%" stop-color="#0D9488" />
+                    </linearGradient>
+                  </defs>
+                  <circle class="health-ring-bg" cx="70" cy="70" r="60" />
+                  <circle class="health-ring-progress" cx="70" cy="70" r="60" />
+                </svg>
+                <div class="health-ring-value">
+                  <span class="health-ring-percent">90%</span>
+                  <span class="health-ring-label">Healthy</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Quick Actions -->
+          <div class="card animate-slide-up">
+            <div class="card-body">
+              <h3 style="font-size: 15px; font-weight: 600; color: var(--text-primary); margin-bottom: 16px;">Quick Actions</h3>
+              <a href="#" class="quick-action">
+                <div class="quick-action-icon">📤</div>
+                <span class="quick-action-text">Import FRA Data</span>
+              </a>
+              <a href="#" class="quick-action">
+                <div class="quick-action-icon">📈</div>
+                <span class="quick-action-text">Run Analysis</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Info Alert -->
+      <div class="alert alert-info animate-slide-up" style="margin-top: 24px;">
+        <span class="alert-icon">ℹ️</span>
+        <div>
+          <p class="alert-title">Soft & Elegant Light Theme Preview</p>
+          <p class="alert-description">
+            This is a preview of the new design system featuring warm off-white backgrounds, 
+            teal/cyan accents, soft shadows, and rounded corners inspired by Apple and Stripe design systems.
+          </p>
+        </div>
+      </div>
+      
+      <!-- Component Showcase -->
+      <div style="margin-top: 32px;">
+        <h2 style="font-family: var(--font-display); font-size: 20px; font-weight: 600; margin-bottom: 20px;">Component Showcase</h2>
+        
+        <div class="grid-3">
+          <!-- Buttons -->
+          <div class="card">
+            <div class="card-body">
+              <h3 style="font-size: 14px; font-weight: 600; margin-bottom: 16px; color: var(--text-muted);">BUTTONS</h3>
+              <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                <button class="btn btn-primary">Primary</button>
+                <button class="btn btn-secondary">Secondary</button>
+                <button class="btn btn-ghost">Ghost</button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Badges -->
+          <div class="card">
+            <div class="card-body">
+              <h3 style="font-size: 14px; font-weight: 600; margin-bottom: 16px; color: var(--text-muted);">BADGES</h3>
+              <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                <span class="badge badge-success"><span class="badge-dot"></span>Success</span>
+                <span class="badge badge-warning"><span class="badge-dot"></span>Warning</span>
+                <span class="badge badge-critical"><span class="badge-dot"></span>Critical</span>
+                <span class="badge badge-info"><span class="badge-dot"></span>Info</span>
+                <span class="badge badge-neutral">Neutral</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Form Input -->
+          <div class="card">
+            <div class="card-body">
+              <h3 style="font-size: 14px; font-weight: 600; margin-bottom: 16px; color: var(--text-muted);">FORM INPUT</h3>
+              <label class="form-label">Search Transformers</label>
+              <div class="input-group">
+                <span class="input-icon">🔍</span>
+                <input type="text" class="input input-with-icon" placeholder="Search by name...">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,27 @@
+/* App.css - Minimal overrides (most styles in index.css) */
+
+/* Root container */
+#root {
+  min-height: 100vh;
+}
+
+/* Page transition wrapper */
+.page-enter {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.page-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all var(--duration-normal) var(--ease-out-expo);
+}
+
+.page-exit {
+  opacity: 1;
+}
+
+.page-exit-active {
+  opacity: 0;
+  transition: opacity var(--duration-fast) ease;
+}
