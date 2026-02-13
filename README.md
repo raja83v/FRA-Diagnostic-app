@@ -2,7 +2,7 @@
 
 A comprehensive **Frequency Response Analysis (FRA) Diagnostic Application** for transformer health monitoring and fault detection. This application provides ML-powered analysis of FRA measurements to detect winding deformations, core issues, and other transformer faults.
 
-![FRA Diagnostics Dashboard](frontend/screenshots/transformer-detail-redesign.png)
+![FRA Diagnostics Dashboard](frontend/screenshots/dashboard-light-theme.png)
 
 ## 🚀 Features
 
