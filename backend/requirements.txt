@@ -17,10 +17,14 @@ python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
 python-dateutil==2.9.0
 
-# ML (lightweight for Phase 1)
+# ML Engine
 numpy==2.2.1
 scipy==1.15.0
+scikit-learn>=1.4.0
+xgboost>=2.0.0
+joblib>=1.3.0
+pandas>=2.1.0
 
 # Report Generation (Phase 6)
-# reportlab==4.2.5
-# openpyxl==3.1.5
+reportlab==4.2.5
+openpyxl==3.1.5

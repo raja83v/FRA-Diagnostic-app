@@ -1,0 +1,1 @@
+from .synthetic_fra import SyntheticFRAGenerator

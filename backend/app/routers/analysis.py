@@ -1,14 +1,21 @@
 """
 Fault Analysis API endpoints.
-ML inference endpoints (actual ML logic added in Phase 4).
+ML inference using trained XGBoost model for FRA fault classification.
 """
-from fastapi import APIRouter, Depends, HTTPException, Query
+import logging
+
+from fastapi import APIRouter, Depends, HTTPException, Query, Body
 from sqlalchemy.orm import Session
 
+from app.config import settings
 from app.database import get_db
 from app.models.fault_analysis import FaultAnalysis
 from app.models.measurement import FRAMeasurement
-from app.schemas.analysis import AnalysisResponse, AnalysisSummary
+from app.models.transformer import Transformer
+from app.schemas.analysis import AnalysisResponse, AnalysisRunRequest, AnalysisSummary
+from app.services.ml_inference import get_inference_service
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/v1/analysis", tags=["Analysis"])
 
@@ -45,55 +52,92 @@ def get_analysis_results(analysis_id: str, db: Session = Depends(get_db)):
 
 
 @router.post("/run/{measurement_id}", response_model=AnalysisResponse, status_code=201)
-def run_analysis(measurement_id: str, db: Session = Depends(get_db)):
+def run_analysis(
+    measurement_id: str,
+    body: AnalysisRunRequest = Body(default=AnalysisRunRequest()),
+    db: Session = Depends(get_db),
+):
     """
     Trigger ML analysis on a measurement.
 
-    Phase 1: Returns a placeholder result.
-    Phase 4: Will run actual ensemble ML inference.
+    Uses the trained XGBoost model to classify faults from FRA data.
+    Optionally compares against the transformer's baseline measurement.
     """
+    # Fetch measurement
     measurement = (
         db.query(FRAMeasurement).filter(FRAMeasurement.id == measurement_id).first()
     )
     if not measurement:
         raise HTTPException(status_code=404, detail="Measurement not found")
 
-    # --- PLACEHOLDER: Phase 4 will replace this with real ML inference ---
-    import random
+    # Get the inference service
+    version = body.model_version or settings.ACTIVE_MODEL_VERSION
+    service = get_inference_service(
+        model_dir=settings.MODEL_DIR,
+        version=version,
+    )
 
-    fault_types = [
-        "healthy",
-        "axial_displacement",
-        "radial_deformation",
-        "core_grounding",
-        "winding_short_circuit",
-        "loose_clamping",
-        "moisture_ingress",
-    ]
+    # Try to load model if not already loaded
+    if not service.is_loaded:
+        if not service.load():
+            raise HTTPException(
+                status_code=503,
+                detail=(
+                    "ML model not available. Train a model first by running: "
+                    "python ml/train_and_evaluate.py"
+                ),
+            )
 
-    # Generate mock probabilities
-    raw_probs = {ft: random.uniform(0, 1) for ft in fault_types}
-    total = sum(raw_probs.values())
-    all_probs = {ft: round(p / total, 4) for ft, p in raw_probs.items()}
+    # Fetch baseline measurement for comparison (if transformer has one)
+    baseline_freq = None
+    baseline_mag = None
+    if measurement.transformer_id:
+        transformer = db.query(Transformer).filter(
+            Transformer.id == measurement.transformer_id
+        ).first()
+        if transformer and transformer.baseline_measurement_id:
+            baseline = db.query(FRAMeasurement).filter(
+                FRAMeasurement.id == transformer.baseline_measurement_id
+            ).first()
+            if baseline and baseline.id != measurement.id:
+                baseline_freq = baseline.frequency_hz
+                baseline_mag = baseline.magnitude_db
 
-    primary_fault = max(all_probs, key=all_probs.get)  # type: ignore[arg-type]
-    primary_prob = all_probs[primary_fault]
+    # Run ML inference
+    try:
+        result = service.predict(
+            frequency_hz=measurement.frequency_hz,
+            magnitude_db=measurement.magnitude_db,
+            phase_degrees=measurement.phase_degrees,
+            baseline_freq=baseline_freq,
+            baseline_mag=baseline_mag,
+        )
+    except Exception as e:
+        logger.error(f"ML inference failed for measurement {measurement_id}: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"ML inference failed: {str(e)}",
+        )
 
-    health_score = round(all_probs.get("healthy", 0.5) * 100, 1)
-
+    # Store results in database
     analysis = FaultAnalysis(
         measurement_id=measurement_id,
-        fault_type=primary_fault,
-        probability_score=primary_prob,
-        confidence_level=round(random.uniform(0.6, 0.95), 3),
-        all_probabilities=all_probs,
-        health_score=health_score,
-        model_version="placeholder-v0.0",
-        model_type="random_placeholder",
+        fault_type=result.fault_type,
+        probability_score=result.probability_score,
+        confidence_level=result.confidence_level,
+        all_probabilities=result.all_probabilities,
+        health_score=result.health_score,
+        model_version=result.model_version,
+        model_type=result.model_type,
+        feature_importance=result.feature_importance if body.include_feature_importance else None,
     )
     db.add(analysis)
     db.commit()
     db.refresh(analysis)
-    # --- END PLACEHOLDER ---
+
+    logger.info(
+        f"Analysis complete: measurement={measurement_id}, "
+        f"fault={result.fault_type}, health={result.health_score}"
+    )
 
     return AnalysisResponse.model_validate(analysis)

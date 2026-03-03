@@ -1,0 +1,164 @@
+{
+  "version": "v1.0.0",
+  "n_test_samples": 760,
+  "accuracy": 0.9671052631578947,
+  "f1_weighted": 0.9670795949014287,
+  "mean_auc_roc": 0.9976053004535148,
+  "per_class_auc_roc": {
+    "axial_displacement": 0.9998095238095238,
+    "core_grounding": 0.9990714285714285,
+    "healthy": 0.9996180555555556,
+    "loose_clamping": 0.9937380952380953,
+    "moisture_ingress": 0.9923809523809524,
+    "radial_deformation": 0.9990476190476191,
+    "winding_short_circuit": 0.9995714285714286
+  },
+  "per_class_fpr": {
+    "axial_displacement": 0.002857142857142857,
+    "core_grounding": 0.0,
+    "healthy": 0.008333333333333333,
+    "loose_clamping": 0.012857142857142857,
+    "moisture_ingress": 0.008571428571428572,
+    "radial_deformation": 0.007142857142857143,
+    "winding_short_circuit": 0.0
+  },
+  "confusion_matrix": [
+    [
+      59,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      55,
+      0,
+      0,
+      0,
+      5,
+      0
+    ],
+    [
+      2,
+      0,
+      398,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      54,
+      6,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      9,
+      51,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      60,
+      0
+    ],
+    [
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      58
+    ]
+  ],
+  "classification_report": {
+    "axial_displacement": {
+      "precision": 0.9672131147540983,
+      "recall": 0.9833333333333333,
+      "f1-score": 0.9752066115702479,
+      "support": 60.0
+    },
+    "core_grounding": {
+      "precision": 1.0,
+      "recall": 0.9166666666666666,
+      "f1-score": 0.9565217391304348,
+      "support": 60.0
+    },
+    "healthy": {
+      "precision": 0.9925187032418953,
+      "recall": 0.995,
+      "f1-score": 0.9937578027465668,
+      "support": 400.0
+    },
+    "loose_clamping": {
+      "precision": 0.8571428571428571,
+      "recall": 0.9,
+      "f1-score": 0.8780487804878049,
+      "support": 60.0
+    },
+    "moisture_ingress": {
+      "precision": 0.8947368421052632,
+      "recall": 0.85,
+      "f1-score": 0.8717948717948718,
+      "support": 60.0
+    },
+    "radial_deformation": {
+      "precision": 0.9230769230769231,
+      "recall": 1.0,
+      "f1-score": 0.96,
+      "support": 60.0
+    },
+    "winding_short_circuit": {
+      "precision": 1.0,
+      "recall": 0.9666666666666667,
+      "f1-score": 0.9830508474576272,
+      "support": 60.0
+    },
+    "accuracy": 0.9671052631578947,
+    "macro avg": {
+      "precision": 0.9478126343315767,
+      "recall": 0.9445238095238094,
+      "f1-score": 0.9454829504553649,
+      "support": 760.0
+    },
+    "weighted avg": {
+      "precision": 0.9678127177914561,
+      "recall": 0.9671052631578947,
+      "f1-score": 0.9670795949014287,
+      "support": 760.0
+    }
+  },
+  "validations": {
+    "accuracy_min_pass": true,
+    "accuracy_target_pass": true,
+    "all_recall_min_pass": true,
+    "all_fpr_max_pass": true,
+    "auc_roc_min_pass": "True"
+  },
+  "thresholds": {
+    "min_accuracy": 0.85,
+    "target_accuracy": 0.92,
+    "min_recall_per_class": 0.8,
+    "target_recall_per_class": 0.9,
+    "max_fpr": 0.15,
+    "target_fpr": 0.08,
+    "min_auc_roc": 0.85,
+    "target_auc_roc": 0.93
+  }
+}

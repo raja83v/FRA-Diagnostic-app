@@ -36,11 +36,16 @@ node_modules/
 frontend/dist/
 frontend/build/
 
-# ML Models (large files)
+# ML Models (large binary files - regenerate with: python ml/train_and_evaluate.py)
+ml/saved_models/*.joblib
 ml/saved_models/*.pkl
 ml/saved_models/*.pt
 ml/saved_models/*.pth
-ml/saved_models/*.joblib
+# Keep JSON metadata (feature_names, metrics) - they are small and useful for reference
+
+# Synthetic training data (large, regeneratable)
+ml/data_generation/training_data.npz
+ml/data_generation/*.npz
 
 # Logs
 *.log

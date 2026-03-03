@@ -169,4 +169,23 @@ export const getImportStats = async (): Promise<{
   return data;
 };
 
+// ── Reports & Exports ──────────────────────────────────────────────────────
+
+/** Download PDF analysis report for a transformer. Opens in new tab. */
+export const downloadPdfReport = (transformerId: string): void => {
+  window.open(`/api/v1/reports/generate/${transformerId}`, '_blank');
+};
+
+/** Download measurements Excel export. */
+export const downloadMeasurementsExcel = (transformerId?: string): void => {
+  const params = transformerId ? `?transformer_id=${transformerId}` : '';
+  window.open(`/api/v1/reports/export/measurements${params}`, '_blank');
+};
+
+/** Download analyses Excel export. */
+export const downloadAnalysesExcel = (transformerId?: string): void => {
+  const params = transformerId ? `?transformer_id=${transformerId}` : '';
+  window.open(`/api/v1/reports/export/analyses${params}`, '_blank');
+};
+
 export default api;

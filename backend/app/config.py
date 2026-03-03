@@ -4,6 +4,9 @@ FRA Diagnostic App - Configuration
 from pydantic_settings import BaseSettings
 from pathlib import Path
 
+# Project root is one level up from backend/
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+
 
 class Settings(BaseSettings):
     """Application settings loaded from environment or .env file."""
@@ -27,8 +30,11 @@ class Settings(BaseSettings):
     SECRET_KEY: str = "dev-secret-key-change-in-production"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
 
-    # ML Models
-    MODEL_DIR: str = "ml/saved_models"
+    # ML Models (resolved relative to project root)
+    MODEL_DIR: str = str(PROJECT_ROOT / "ml" / "saved_models")
+    ACTIVE_MODEL_VERSION: str = "v1.0.0"
+    CONFIDENCE_THRESHOLD: float = 0.5
+    FEATURE_EXTRACTION_TARGET_POINTS: int = 800
 
     # FRA Data Validation
     MIN_FREQUENCY_HZ: float = 20.0

@@ -10,6 +10,7 @@ from app.config import settings
 from app.database import Base, engine
 from app.routers import transformers, measurements, analysis, recommendations
 from app.routers import imports as imports_router
+from app.routers import reports
 
 # Create all tables (for development; production uses Alembic migrations)
 Base.metadata.create_all(bind=engine)
@@ -41,6 +42,7 @@ app.include_router(measurements.router)
 app.include_router(analysis.router)
 app.include_router(recommendations.router)
 app.include_router(imports_router.router)
+app.include_router(reports.router)
 
 
 @app.get("/", tags=["Root"])

@@ -9,6 +9,7 @@ interface GlassCardProps {
   hover?: boolean;
   padding?: 'none' | 'sm' | 'md' | 'lg';
   onClick?: () => void;
+  style?: import('react').CSSProperties;
 }
 
 const paddingClasses = {
@@ -24,6 +25,7 @@ export default function GlassCard({
   hover = true,
   padding = 'md',
   onClick,
+  style,
 }: GlassCardProps) {
   return (
     <div 
@@ -31,6 +33,7 @@ export default function GlassCard({
       onClick={onClick}
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
+      style={style}
     >
       {children}
     </div>
