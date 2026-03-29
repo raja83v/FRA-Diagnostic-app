@@ -12,12 +12,116 @@ import type {
   Recommendation,
   UploadResponse,
   ImportHistoryRecord,
+  AuthSessionResponse,
+  AuthUser,
+  LoginPayload,
+  SignupPayload,
 } from './types';
+
+type RetriableRequestConfig = {
+  _retry?: boolean;
+  url?: string;
+};
+
+const CSRF_COOKIE_NAME = 'fra_csrf_token';
+const CSRF_HEADER_NAME = 'X-CSRF-Token';
 
 const api = axios.create({
   baseURL: '/api/v1',
   headers: { 'Content-Type': 'application/json' },
+  withCredentials: true,
 });
+
+export const AUTH_LOGOUT_EVENT = 'fra-auth-logout';
+
+let refreshPromise: Promise<void> | null = null;
+let csrfPromise: Promise<string> | null = null;
+
+const isAuthRequest = (url?: string) =>
+  !!url && ['/auth/login', '/auth/signup', '/auth/refresh', '/auth/logout'].some((path) => url.includes(path));
+
+const readCookie = (name: string): string | null => {
+  const escapedName = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const match = document.cookie.match(new RegExp(`(?:^|; )${escapedName}=([^;]*)`));
+  return match ? decodeURIComponent(match[1]) : null;
+};
+
+export const ensureCsrfToken = async (): Promise<string> => {
+  const existingToken = readCookie(CSRF_COOKIE_NAME);
+  if (existingToken) return existingToken;
+
+  csrfPromise ??= api.get('/auth/csrf').then(({ data }) => data.csrf_token as string).finally(() => {
+    csrfPromise = null;
+  });
+  return csrfPromise;
+};
+
+api.interceptors.request.use(async (config) => {
+  const method = config.method?.toLowerCase();
+  if (!method || ['get', 'head', 'options'].includes(method)) {
+    return config;
+  }
+
+  if (!config.url?.includes('/auth/csrf')) {
+    const csrfToken = readCookie(CSRF_COOKIE_NAME) ?? await ensureCsrfToken();
+    config.headers = config.headers ?? {};
+    config.headers[CSRF_HEADER_NAME] = csrfToken;
+  }
+
+  return config;
+});
+
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const status = error.response?.status;
+    const originalRequest = error.config as RetriableRequestConfig | undefined;
+
+    if (status !== 401 || !originalRequest || originalRequest._retry || isAuthRequest(originalRequest.url)) {
+      return Promise.reject(error);
+    }
+
+    originalRequest._retry = true;
+
+    try {
+      refreshPromise ??= refreshSession().finally(() => {
+        refreshPromise = null;
+      });
+      await refreshPromise;
+      return api(originalRequest);
+    } catch (refreshError) {
+      window.dispatchEvent(new CustomEvent(AUTH_LOGOUT_EVENT, {
+        detail: { reason: 'session-expired' },
+      }));
+      return Promise.reject(refreshError);
+    }
+  }
+);
+
+// ── Authentication ──
+
+export const signup = async (body: SignupPayload): Promise<AuthSessionResponse> => {
+  const { data } = await api.post('/auth/signup', body);
+  return data;
+};
+
+export const login = async (body: LoginPayload): Promise<AuthSessionResponse> => {
+  const { data } = await api.post('/auth/login', body);
+  return data;
+};
+
+export const logout = async (): Promise<void> => {
+  await api.post('/auth/logout');
+};
+
+export const refreshSession = async (): Promise<void> => {
+  await api.post('/auth/refresh');
+};
+
+export const getCurrentUser = async (): Promise<AuthUser> => {
+  const { data } = await api.get('/auth/me');
+  return data;
+};
 
 // ── Transformers ──
 

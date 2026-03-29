@@ -13,11 +13,16 @@ from app.models.fault_analysis import FaultAnalysis
 from app.models.measurement import FRAMeasurement
 from app.models.transformer import Transformer
 from app.schemas.analysis import AnalysisResponse, AnalysisRunRequest, AnalysisSummary
+from app.services.auth import get_current_active_user
 from app.services.ml_inference import get_inference_service
 
 logger = logging.getLogger(__name__)
 
-router = APIRouter(prefix="/api/v1/analysis", tags=["Analysis"])
+router = APIRouter(
+    prefix="/api/v1/analysis",
+    tags=["Analysis"],
+    dependencies=[Depends(get_current_active_user)],
+)
 
 
 @router.get("/", response_model=list[AnalysisSummary])

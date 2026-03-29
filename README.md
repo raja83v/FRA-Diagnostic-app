@@ -38,6 +38,15 @@ A comprehensive **Frequency Response Analysis (FRA) Diagnostic Application** for
 - **Excel Export** — Measurements and analysis results exportable to `.xlsx` with styled headers and auto-width columns
 - **Per-Transformer Filtering** — Export data scoped to individual transformers
 
+### Authentication & Workspace Security
+- **Cookie-Based Authentication** — Secure access and refresh session tokens stored in HTTP-only cookies
+- **Self-Service Signup** — New engineering users can create an account and enter the workspace immediately
+- **Protected Workspace Routes** — Dashboard, transformer management, imports, analysis, recommendations, and reports require authentication
+- **CSRF Protection** — Unsafe API requests require a valid CSRF cookie and matching `X-CSRF-Token` header
+- **Shared Rate Limiting** — Login and signup attempts are rate limited through the application database by client IP and email
+- **Session Recovery UX** — Frontend restores active sessions and shows clear session-expired and signed-out notices
+- **Automated Auth Tests** — Backend auth flows are covered with pytest regression tests
+
 ## 🛠️ Tech Stack
 
 ### Backend
@@ -49,7 +58,7 @@ A comprehensive **Frequency Response Analysis (FRA) Diagnostic Application** for
 - **openpyxl 3.1** — Excel file generation
 
 ### Frontend
-- **React 18** — UI framework with TypeScript
+- **React 19** — UI framework with TypeScript
 - **Vite** — Fast build tool
 - **Tailwind CSS v4** — Utility-first CSS framework (CSS-first config)
 - **React Router v7** — Client-side routing
@@ -70,25 +79,30 @@ A comprehensive **Frequency Response Analysis (FRA) Diagnostic Application** for
 FRA-Diagnostic-app/
 ├── backend/
 │   ├── app/
-│   │   ├── models/          # SQLAlchemy models (transformer, measurement, analysis, recommendation)
-│   │   ├── routers/         # API endpoints (transformers, measurements, analysis, recommendations, imports, reports)
-│   │   ├── schemas/         # Pydantic request/response schemas
-│   │   ├── services/        # Business logic (normalization, validation, ML inference)
+│   │   ├── models/          # SQLAlchemy models (transformer, measurement, analysis, recommendation, user, auth rate limits)
+│   │   ├── routers/         # API endpoints (auth, transformers, measurements, analysis, recommendations, imports, reports)
+│   │   ├── schemas/         # Pydantic request/response schemas, including auth payloads
+│   │   ├── services/        # Business logic (normalization, validation, ML inference, auth, rate limiting)
 │   │   ├── parsers/         # FRA file parsers (Omicron, Megger, Doble, CSV, XML)
 │   │   ├── main.py          # FastAPI application entry point
 │   │   ├── config.py        # Application configuration
 │   │   └── database.py      # DB connection and session management
 │   ├── alembic/             # Database migrations
+│   ├── tests/               # Pytest auth regression tests
 │   ├── uploads/             # Uploaded FRA files (gitignored)
-│   └── requirements.txt
+│   ├── requirements.txt
+│   └── requirements-dev.txt
 ├── frontend/
 │   ├── src/
+│   │   ├── auth/            # Auth provider and session state
 │   │   ├── components/      # React components
 │   │   │   ├── Layout.tsx   # App layout with sidebar
 │   │   │   ├── Sidebar.tsx  # Navigation sidebar
 │   │   │   └── ui/          # Reusable UI components (GlassCard, Badge, Button, Input, Spinner, etc.)
 │   │   ├── pages/           # Page components
 │   │   │   ├── Dashboard.tsx           # Fleet overview with health trend chart
+│   │   │   ├── LoginPage.tsx           # Sign-in experience and session notices
+│   │   │   ├── SignupPage.tsx          # Self-service account creation
 │   │   │   ├── TransformersPage.tsx    # Transformer list/create
 │   │   │   ├── TransformerDetail.tsx   # Detail view with multi-curve comparison
 │   │   │   ├── AnalysisPage.tsx        # ML analysis with probability dashboard
@@ -137,8 +151,14 @@ source .venv/bin/activate
 # Install dependencies
 pip install -r backend/requirements.txt
 
-# Seed sample data (optional)
+# Install test dependencies (recommended)
+pip install -r backend/requirements-dev.txt
+
+# Optional but recommended: run migrations for auth schema
 cd backend
+alembic upgrade head
+
+# Seed sample data (optional)
 python -m app.seed
 
 # Start the server
@@ -172,6 +192,53 @@ The application will be available at:
 - **Backend API**: http://localhost:8000
 - **API Documentation**: http://localhost:8000/docs
 
+## Authentication & Security
+
+The application now uses cookie-based authentication for all business endpoints and frontend workspace routes.
+
+### Auth Flow
+- `GET /api/v1/auth/csrf` issues the CSRF token used by the SPA for unsafe requests.
+- `POST /api/v1/auth/signup` creates an account and starts a session.
+- `POST /api/v1/auth/login` starts a session for an existing user.
+- `POST /api/v1/auth/refresh` refreshes the current session.
+- `POST /api/v1/auth/logout` clears the session cookies.
+- `GET /api/v1/auth/me` returns the authenticated user.
+
+### Protected Routes
+- All `/api/v1/transformers/*`, `/api/v1/measurements/*`, `/api/v1/analysis/*`, `/api/v1/recommendations/*`, `/api/v1/imports/*`, and `/api/v1/reports/*` routes require authentication.
+- Frontend routes other than `/login` and `/signup` require an authenticated session.
+
+### Security Controls
+- Access and refresh tokens are stored in HTTP-only cookies.
+- Unsafe API requests require a matching CSRF cookie and `X-CSRF-Token` header.
+- Login and signup endpoints are rate limited through the shared application database by client IP and email.
+- Passwords are hashed with `pbkdf2_sha256` before storage.
+
+### Backend Tests
+
+Run the automated backend auth tests with:
+
+```bash
+cd backend
+pytest tests/test_auth.py
+```
+
+### Relevant Environment Settings
+- `SECRET_KEY`
+- `JWT_ALGORITHM`
+- `ACCESS_TOKEN_EXPIRE_MINUTES`
+- `REFRESH_TOKEN_EXPIRE_DAYS`
+- `ACCESS_COOKIE_NAME`
+- `REFRESH_COOKIE_NAME`
+- `CSRF_COOKIE_NAME`
+- `CSRF_HEADER_NAME`
+- `COOKIE_SECURE`
+- `COOKIE_SAMESITE`
+- `COOKIE_DOMAIN`
+- `AUTH_RATE_LIMIT_WINDOW_SECONDS`
+- `LOGIN_RATE_LIMIT_ATTEMPTS`
+- `SIGNUP_RATE_LIMIT_ATTEMPTS`
+
 ## 🎨 Design System
 
 The application uses a **Soft & Elegant Light Theme** with teal/cyan accents, inspired by Apple and Stripe design patterns.
@@ -198,6 +265,16 @@ View the complete design system at: http://localhost:5173/design-preview.html
 
 ## 📊 API Endpoints
 
+### Authentication
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/v1/auth/csrf` | Issue a CSRF token for the SPA |
+| `POST` | `/api/v1/auth/signup` | Create account and start session |
+| `POST` | `/api/v1/auth/login` | Authenticate and start session |
+| `POST` | `/api/v1/auth/refresh` | Refresh the current session |
+| `POST` | `/api/v1/auth/logout` | Clear session cookies |
+| `GET` | `/api/v1/auth/me` | Get current authenticated user |
+
 ### Transformers
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -218,15 +295,15 @@ View the complete design system at: http://localhost:5173/design-preview.html
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | `POST` | `/api/v1/imports/upload` | Upload FRA file |
-| `GET` | `/api/v1/imports/history` | Get import history |
+| `GET` | `/api/v1/imports/` | Get import history |
 | `GET` | `/api/v1/imports/stats` | Get import statistics |
 
 ### ML Analysis
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | `POST` | `/api/v1/analysis/run/{measurement_id}` | Run ML fault analysis |
-| `GET` | `/api/v1/analysis/results/{measurement_id}` | Get analysis results |
-| `GET` | `/api/v1/analysis/list` | List all analyses |
+| `GET` | `/api/v1/analysis/{analysis_id}/results` | Get analysis results |
+| `GET` | `/api/v1/analysis/` | List all analyses |
 
 ### Recommendations
 | Method | Endpoint | Description |
@@ -290,8 +367,9 @@ View the complete design system at: http://localhost:5173/design-preview.html
 - [x] **Phase 4**: Visualization engine — analysis dashboard, health trends, multi-curve comparison, phase overlay
 - [x] **Phase 5**: Recommendation engine — auto-generation, urgency classification, status management
 - [x] **Phase 6**: Reporting — PDF reports, Excel export, per-transformer filtering
-- [ ] **Phase 7**: Security hardening, authentication, role-based access control
-- [ ] **Phase 8**: Production deployment, performance optimization, monitoring
+- [x] **Phase 7**: Authentication, CSRF protection, shared rate limiting, protected workspace routes, backend auth tests
+- [ ] **Phase 8**: Role-based access control and authorization policies
+- [ ] **Phase 9**: Production deployment, performance optimization, monitoring
 
 ## 🤝 Contributing
 

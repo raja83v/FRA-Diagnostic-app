@@ -16,6 +16,7 @@ from app.models.import_history import ImportHistory, ImportStatus
 from app.parsers import registry
 from app.services.validation import validate_fra_data
 from app.services.normalization import normalize_fra_data
+from app.services.auth import get_current_active_user
 from app.schemas.measurement import (
     MeasurementCreate,
     MeasurementResponse,
@@ -23,7 +24,11 @@ from app.schemas.measurement import (
     UploadResponse,
 )
 
-router = APIRouter(prefix="/api/v1/measurements", tags=["Measurements"])
+router = APIRouter(
+    prefix="/api/v1/measurements",
+    tags=["Measurements"],
+    dependencies=[Depends(get_current_active_user)],
+)
 
 
 @router.get("/", response_model=list[MeasurementSummary])

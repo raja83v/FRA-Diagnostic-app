@@ -9,8 +9,13 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.recommendation import Recommendation, RecommendationStatus
 from app.schemas.recommendation import RecommendationResponse, RecommendationStatusUpdate
+from app.services.auth import get_current_active_user
 
-router = APIRouter(prefix="/api/v1/recommendations", tags=["Recommendations"])
+router = APIRouter(
+    prefix="/api/v1/recommendations",
+    tags=["Recommendations"],
+    dependencies=[Depends(get_current_active_user)],
+)
 
 
 @router.get("/", response_model=list[RecommendationResponse])

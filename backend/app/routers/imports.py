@@ -9,6 +9,7 @@ from datetime import datetime
 
 from app.database import get_db
 from app.models.import_history import ImportHistory
+from app.services.auth import get_current_active_user
 
 
 class ImportHistoryResponse(BaseModel):
@@ -33,7 +34,11 @@ class ImportHistoryResponse(BaseModel):
     model_config = {"from_attributes": True}
 
 
-router = APIRouter(prefix="/api/v1/imports", tags=["Import History"])
+router = APIRouter(
+    prefix="/api/v1/imports",
+    tags=["Import History"],
+    dependencies=[Depends(get_current_active_user)],
+)
 
 
 @router.get("/", response_model=list[ImportHistoryResponse])

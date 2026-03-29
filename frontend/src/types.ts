@@ -20,6 +20,8 @@ export type UrgencyLevel = 'urgent' | 'high' | 'medium' | 'low' | 'info';
 export type RecommendationStatus =
   | 'pending' | 'in_progress' | 'completed' | 'deferred' | 'cancelled';
 
+export type UserRole = 'admin' | 'engineer' | 'viewer';
+
 // === Models ===
 
 export interface Transformer {
@@ -140,4 +142,32 @@ export interface ImportHistoryRecord {
   error_message: string | null;
   created_at: string;
   completed_at: string | null;
+}
+
+export interface AuthUser {
+  id: string;
+  email: string;
+  full_name: string | null;
+  role: UserRole;
+  is_active: boolean;
+  created_at: string;
+}
+
+export interface LoginPayload {
+  email: string;
+  password: string;
+}
+
+export interface SignupPayload extends LoginPayload {
+  full_name?: string;
+}
+
+export interface AuthSessionResponse {
+  user: AuthUser;
+  message: string;
+}
+
+export interface AuthNotice {
+  kind: 'info' | 'success' | 'error';
+  message: string;
 }

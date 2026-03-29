@@ -9,9 +9,13 @@ import {
   Upload,
   BarChart3,
   ClipboardList,
-  Settings,
   Activity,
+  LogOut,
+  ShieldCheck,
 } from 'lucide-react';
+
+import { useAuth } from '../auth/AuthProvider';
+import Button from './ui/Button';
 
 const navItems = [
   { to: '/', icon: LayoutDashboard, label: 'Dashboard' },
@@ -22,6 +26,14 @@ const navItems = [
 ];
 
 export default function Sidebar() {
+  const { user, logout } = useAuth();
+  const initials = user?.full_name
+    ?.split(' ')
+    .map((part) => part[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase() ?? user?.email.slice(0, 2).toUpperCase() ?? 'OP';
+
   return (
     <aside 
       className="fixed left-0 top-0 h-screen w-70 flex flex-col z-50"
@@ -101,21 +113,50 @@ export default function Sidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="px-6 py-5 border-t border-(--card-border)">
-        <NavLink
-          to="/settings"
-          className="flex items-center gap-3 text-sm text-(--text-muted) hover:text-(--teal-600) transition-colors duration-200"
-        >
-          <Settings size={16} />
-          <span>Settings</span>
-        </NavLink>
-        <div className="flex items-center justify-between mt-4">
+      <div className="px-6 py-5 border-t border-(--card-border) space-y-4">
+        <div className="rounded-2xl border border-(--card-border) bg-(--bg-secondary) p-3">
+          <div className="flex items-center gap-3">
+            <div
+              className="flex h-11 w-11 items-center justify-center rounded-2xl text-sm font-semibold text-white"
+              style={{ background: 'var(--gradient-teal)' }}
+            >
+              {initials}
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-semibold text-(--text-primary)">
+                {user?.full_name || 'Authenticated user'}
+              </p>
+              <p className="truncate text-xs text-(--text-muted)">{user?.email}</p>
+            </div>
+          </div>
+
+          <div className="mt-3 flex items-center justify-between rounded-xl bg-white/70 px-3 py-2 text-xs">
+            <div className="flex items-center gap-2 text-(--text-muted)">
+              <ShieldCheck size={14} className="text-(--teal-600)" />
+              <span>Role</span>
+            </div>
+            <span className="font-medium text-(--text-primary)">{user?.role ?? 'engineer'}</span>
+          </div>
+
+          <Button
+            type="button"
+            variant="ghost"
+            fullWidth
+            className="mt-3 justify-center"
+            icon={<LogOut size={15} />}
+            onClick={() => logout()}
+          >
+            Sign out
+          </Button>
+        </div>
+
+        <div className="flex items-center justify-between">
           <p className="text-[10px] text-(--text-dim) font-mono">
             v1.0.0
           </p>
           <div className="flex items-center gap-1.5">
             <div className="w-1.5 h-1.5 rounded-full bg-(--teal-500)" />
-            <span className="text-[10px] text-(--text-muted)">System Online</span>
+            <span className="text-[10px] text-(--text-muted)">Session secured</span>
           </div>
         </div>
       </div>

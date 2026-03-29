@@ -3,14 +3,19 @@ FRA Diagnostic Software - Main Application Entry Point
 
 AI-Driven Frequency Response Analysis for Transformer Diagnostics
 """
-from fastapi import FastAPI
+from http import HTTPMethod
+
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 from app.config import settings
 from app.database import Base, engine
+from app.routers import auth
 from app.routers import transformers, measurements, analysis, recommendations
 from app.routers import imports as imports_router
 from app.routers import reports
+from app.services.auth import validate_csrf_request
 
 # Create all tables (for development; production uses Alembic migrations)
 Base.metadata.create_all(bind=engine)
@@ -36,7 +41,26 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+@app.middleware("http")
+async def enforce_csrf(request, call_next):
+    """Apply CSRF validation to all unsafe API requests."""
+    safe_methods = {
+        HTTPMethod.GET,
+        HTTPMethod.HEAD,
+        HTTPMethod.OPTIONS,
+        HTTPMethod.TRACE,
+    }
+    if request.url.path.startswith("/api/v1") and request.method not in safe_methods:
+        try:
+            validate_csrf_request(request)
+        except HTTPException as exc:
+            return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
+
+    return await call_next(request)
+
 # Register API routers
+app.include_router(auth.router)
 app.include_router(transformers.router)
 app.include_router(measurements.router)
 app.include_router(analysis.router)

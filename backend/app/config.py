@@ -28,7 +28,19 @@ class Settings(BaseSettings):
 
     # JWT Auth (Phase 7)
     SECRET_KEY: str = "dev-secret-key-change-in-production"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
+    JWT_ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    REFRESH_TOKEN_EXPIRE_DAYS: int = 7
+    ACCESS_COOKIE_NAME: str = "fra_access_token"
+    REFRESH_COOKIE_NAME: str = "fra_refresh_token"
+    CSRF_COOKIE_NAME: str = "fra_csrf_token"
+    CSRF_HEADER_NAME: str = "X-CSRF-Token"
+    COOKIE_SECURE: bool = False
+    COOKIE_SAMESITE: str = "lax"
+    COOKIE_DOMAIN: str | None = None
+    AUTH_RATE_LIMIT_WINDOW_SECONDS: int = 60
+    LOGIN_RATE_LIMIT_ATTEMPTS: int = 10
+    SIGNUP_RATE_LIMIT_ATTEMPTS: int = 5
 
     # ML Models (resolved relative to project root)
     MODEL_DIR: str = str(PROJECT_ROOT / "ml" / "saved_models")

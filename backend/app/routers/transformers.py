@@ -13,8 +13,13 @@ from app.schemas.transformer import (
     TransformerUpdate,
     TransformerResponse,
 )
+from app.services.auth import get_current_active_user
 
-router = APIRouter(prefix="/api/v1/transformers", tags=["Transformers"])
+router = APIRouter(
+    prefix="/api/v1/transformers",
+    tags=["Transformers"],
+    dependencies=[Depends(get_current_active_user)],
+)
 
 
 @router.get("/", response_model=list[TransformerResponse])

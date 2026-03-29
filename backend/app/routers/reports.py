@@ -18,8 +18,13 @@ from app.models.transformer import Transformer
 from app.models.measurement import FRAMeasurement
 from app.models.fault_analysis import FaultAnalysis, FaultType
 from app.models.recommendation import Recommendation
+from app.services.auth import get_current_active_user
 
-router = APIRouter(prefix="/api/v1/reports", tags=["Reports"])
+router = APIRouter(
+    prefix="/api/v1/reports",
+    tags=["Reports"],
+    dependencies=[Depends(get_current_active_user)],
+)
 
 
 # ── PDF Report ──────────────────────────────────────────────────────────────

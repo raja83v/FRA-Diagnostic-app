@@ -12,6 +12,8 @@ from app.models.recommendation import (  # noqa: F401
 )
 from app.models.ml_model import MLModel  # noqa: F401
 from app.models.import_history import ImportHistory, ImportStatus  # noqa: F401
+from app.models.user import User, UserRole  # noqa: F401
+from app.models.auth_rate_limit import AuthRateLimitEvent  # noqa: F401
 
 __all__ = [
     "Transformer",
@@ -26,4 +28,7 @@ __all__ = [
     "MLModel",
     "ImportHistory",
     "ImportStatus",
+    "User",
+    "UserRole",
+    "AuthRateLimitEvent",
 ]
